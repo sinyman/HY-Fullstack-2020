@@ -6,4 +6,4 @@
 ![Exercise 5 Sequence diagram](./Exercise5.png)
 
 ## Exercise 6
-
+![Exercise 6 Sequence diagram](./Exercise6.png)
