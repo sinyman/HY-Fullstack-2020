@@ -11,9 +11,13 @@ const Statistics = ({good, neutral, bad}) => (
   <div>
     <h2>Statistics</h2>
       <ul>
-        <li><p>Good: {good}</p></li>
-        <li><p>Neutral: {neutral}</p></li>
-        <li><p>Bad: {bad}</p></li>
+        <li>Good: {good}</li>
+        <li>Neutral: {neutral}</li>
+        <li>Bad: {bad}</li>
+        <li>Total: {good+neutral+bad}</li>
+        <br/>
+        <li>Average score: {(good-bad)/(good+neutral+bad)}</li>
+        <li>Positive: {(good/(good+neutral+bad))*100}% </li>
       </ul>
   </div>
 )
