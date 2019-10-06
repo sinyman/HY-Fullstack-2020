@@ -10,15 +10,21 @@ const Button = (props) => (
 const Statistic = ({text, value}) => {
   if(text === 'Positive') {
     return(
-      <li>
-        {text}: {value}%
-      </li>
+      <tbody>
+        <tr>
+          <th>{text}:</th>
+          <td>{value.toFixed(2)}%</td>
+        </tr>
+      </tbody>
     )
   }
   return(
-    <li>
-      {text}: {value}
-    </li>
+    <tbody>
+      <tr>
+        <th>{text}:</th>
+        <td>{value.toFixed(2)}</td>
+      </tr>
+    </tbody>
   )
 }
 
@@ -36,6 +42,22 @@ const Statistics = ({good, neutral, bad}) => {
   return(
     <div>
       <h2>Statistics</h2>
+        <table>
+          <Statistic text='Good' value={good} />
+          <Statistic text='Neutral' value={neutral} />
+          <Statistic text='Bad' value={bad} />
+          <Statistic text='Total' value={good+neutral+bad} />
+          <Statistic text='Average score' value={(good-bad)/(good+neutral+bad)} />
+          <Statistic text='Positive' value={(good/(good+neutral+bad))*100} />
+        </table>
+    </div>
+  )
+}
+
+/*
+  return(
+    <div>
+      <h2>Statistics</h2>
         <ul>
           <Statistic text='Good' value={good} />
           <Statistic text='Neutral' value={neutral} />
@@ -47,7 +69,7 @@ const Statistics = ({good, neutral, bad}) => {
         </ul>
     </div>
   )
-}
+*/
 
 const App = () => {
   // save clicks of each button to own state
