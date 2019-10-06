@@ -7,20 +7,47 @@ const Button = (props) => (
   </button>
 )
 
-const Statistics = ({good, neutral, bad}) => (
-  <div>
-    <h2>Statistics</h2>
-      <ul>
-        <li>Good: {good}</li>
-        <li>Neutral: {neutral}</li>
-        <li>Bad: {bad}</li>
-        <li>Total: {good+neutral+bad}</li>
-        <br/>
-        <li>Average score: {(good-bad)/(good+neutral+bad)}</li>
-        <li>Positive: {(good/(good+neutral+bad))*100}% </li>
-      </ul>
-  </div>
-)
+const Statistic = ({text, value}) => {
+  if(text === 'Positive') {
+    return(
+      <li>
+        {text}: {value}%
+      </li>
+    )
+  }
+  return(
+    <li>
+      {text}: {value}
+    </li>
+  )
+}
+
+const Statistics = ({good, neutral, bad}) => {
+  let statSum = good+bad+neutral;
+  if(statSum === 0) {
+    return(
+      <div>
+        <h2>Statistics</h2>
+        There are no statistics to be shown
+      </div>
+    )
+  }
+
+  return(
+    <div>
+      <h2>Statistics</h2>
+        <ul>
+          <Statistic text='Good' value={good} />
+          <Statistic text='Neutral' value={neutral} />
+          <Statistic text='Bad' value={bad} />
+          <Statistic text='Total' value={good+neutral+bad} />
+          <br/>
+          <Statistic text='Average score' value={(good-bad)/(good+neutral+bad)} />
+          <Statistic text='Positive' value={(good/(good+neutral+bad))*100} />
+        </ul>
+    </div>
+  )
+}
 
 const App = () => {
   // save clicks of each button to own state
