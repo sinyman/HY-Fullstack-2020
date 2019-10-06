@@ -4,5 +4,5 @@ This is the submission directory for part 1
 ## Hours used
 |What's been done  |Hours used|
 |------------------|----------|
-|Exercises 1.1-1.5 |1.25h     |
-|Exercises 1.6-1.14|6h        |
+|Exercises 1.1-1.5 |~1.25h     |
+|Exercises 1.6-1.14|~7h        |
