@@ -35,6 +35,7 @@ const Course = (props) => {
     <div>
       <Header course={props.course} />
       <Content course={props.course} />
+      <Total course={props.course} />
     </div>
   )
 }
@@ -55,6 +56,16 @@ const Part = ({name, exercises}) => {
   return(
     <p>{name}<br/> Exercises: {exercises}</p>
   )
+}
+
+const Total = ({course}) => {
+  const totalEx = course.parts.reduce(function(sum, order) {
+    return sum + order.exercises
+  }, 0)
+
+  return <div>
+      <b>Total of {totalEx} exercises!</b>
+    </div>
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
