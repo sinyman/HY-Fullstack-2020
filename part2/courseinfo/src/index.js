@@ -46,31 +46,15 @@ const Header = (props) => {
 }
 
 const Content = ({course}) => {
-  for (var i = 0; i < course.parts.length+1; i++) {
-    console.log('HEJHEJ')
-    return <Part name={course.parts[i].name} exercises={course.parts[i].exercises} />
-  }
+
+  return course.parts.map(part => <Part name={part.name} exercises={part.exercises} key={part.id} />)
 }
+
 
 const Part = ({name, exercises}) => {
   return(
     <p>{name}<br/> Exercises: {exercises}</p>
   )
 }
-/*
-const Total = (props) => {
-  return (
-    <p>Total number of exercises: {props.content[0].exercises
-       + props.content[1].exercises
-       + props.content[2].exercises}</p>
-  )
-}
 
-EXTRA
-    <p>  
-      {props.content[0].name}<br/> Exercises: {props.content[0].exercises}<br/>
-      {props.content[1].name}<br/> Exercises: {props.content[1].exercises}<br/>
-      {props.content[2].name}<br/> Exercises: {props.content[2].exercises}
-    </p>
-*/
 ReactDOM.render(<App />, document.getElementById('root'))
