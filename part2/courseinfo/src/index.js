@@ -28,7 +28,7 @@ const App = () => {
           id: 4
         }
       ]
-    }, 
+    },
     {
       name: 'Node.js',
       id: 2,
@@ -47,40 +47,42 @@ const App = () => {
     }
   ]
 
+  const assembleCourses = () => {
+    return (
+        courses.map(course => <Course key={course.id} course={course} />)
+    )
+  }
+
   return (
     <div>
-      {courses}.map(course => <Course props={course} />)
+      <h1>Web development curriculum</h1>
+      {assembleCourses()}
     </div>
   )
 }
 
-const Course = (props) => {
-  console.log("HEJSSAN: ", {props.course.name})
+const Course = ({course}) => {
   return (
     <div>
-      <Header course={props.course} />
-      
+      <Header course={course} />
+      <Content course={course} />
+      <Total course={course} />
     </div>
   )
 }
-
-/*
-<Content course={props.course} />
-<Total course={props.course} />
-*/
 
 const Header = ({course}) => {
   return (
-    <h1> {course.name} </h1>
+    <h3> {course.name} </h3>
   )
 }
 
 const Content = ({course}) => {
-  console.log("HEJ:", {course})
+  var parts = course.parts.map(part =>
+    <Part name={part.name} exercises={part.exercises} key={part.id} />)
 
-  //return course.parts.map(part => <Part name={part.name} exercises={part.exercises} key={part.id} />)
+  return parts
 }
-
 
 const Part = ({name, exercises}) => {
   return(
@@ -93,9 +95,11 @@ const Total = ({course}) => {
     return sum + order.exercises
   }, 0)
 
-  return <div>
+  return (
+    <div>
       <b>Total of {totalEx} exercises!</b>
     </div>
+  )
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
