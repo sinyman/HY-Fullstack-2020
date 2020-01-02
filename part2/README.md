@@ -6,3 +6,4 @@ This is the submission directory for part 2
 |------------------|----------|
 |Basic part 2 setup|  1h      |
 |Part 2.0-4        |  3h      |
+|Part 2.4-2.5      |  2h      |
