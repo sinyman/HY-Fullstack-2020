@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
+import People from './components/People'
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
 
 const App = () => {
   const [ persons, setPersons] = useState([
@@ -68,7 +71,7 @@ const App = () => {
 
   }
 
-  const showPeople = () => {
+  const getPeopleToShow = () => {
 
     const peopleToShow = showAll
     ? persons
@@ -78,46 +81,28 @@ const App = () => {
     // Extra method to stop infinite rendering loop
     const clearSearchField = () => setNewSearch('')
 
-    return <People people={peopleToShow} />
+    return peopleToShow
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      filter shown with:
-      <form onSubmit={searchPeople}>
-        <input value={newSearch} onChange={handleSearchChange} />
-      </form>
-      <h3>Add new number</h3>
-      <form onSubmit={savePerson}>
-        <div>
-          name: <input value={newName} onChange={handleTextChange} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h3>Numbers</h3>
-      {showPeople()}
+      <Filter searchPeople={searchPeople}
+        newSearch={newSearch}
+        handleSearchChange={handleSearchChange}
+      />
+
+      <PersonForm savePerson={savePerson}
+        newName={newName}
+        newNumber={newNumber}
+        handleTextChange={handleTextChange}
+        handleNumberChange={handleNumberChange}
+      />
+
+      <People people={getPeopleToShow()} />
     </div>
   )
 }
 
-const People = ({people}) => {
-  const listPeople = () => {
-    return (
-      people.map(person => <li key={person.id}>{person.name} {person.phone}</li>)
-    )
-  }
-
-  return (
-    <ul>
-      {listPeople()}
-    </ul>
-  )
-}
 
 ReactDOM.render(<App />, document.getElementById('root'))
