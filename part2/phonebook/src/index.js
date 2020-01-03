@@ -11,15 +11,30 @@ const App = () => {
     setNewName(event.target.value)
   }
 
+  const personValid = (name) => {
+    const names = persons.map(person => person.name.toLowerCase());
+
+    // Returns false if person is already in list
+    // returns true otherwise
+    return !names.includes(name.toLowerCase())
+  }
+
   const savePerson = (event) => {
     event.preventDefault()
-    const personObject = {
-      name: newName,
-      id: persons.length + 1
-    }
 
-    setPersons(persons.concat(personObject))
-    setNewName('')
+    if(personValid(newName)) {
+      const personObject = {
+        name: newName,
+        id: persons.length + 1
+      }
+
+      setPersons(persons.concat(personObject))
+      setNewName('')
+
+    } else {
+      window.alert(`${newName} is already added to phonebook`);
+      setNewName('')
+    }
   }
 
   return (
