@@ -3,7 +3,11 @@ import ReactDOM from 'react-dom'
 import People from './components/People'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 import numberService from './services/numberService'
+
+import './styles.css'
+
 
 const App = () => {
   const [ persons, setPersons] = useState([])
@@ -13,6 +17,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch ] = useState('')
   const [ showAll, setShowAll ] = useState(true)
+  const [ errorMessage, setErrorMessage ] = useState(null)
 
 // Form handling
   const handleTextChange = (event) => { setNewName(event.target.value) }
@@ -26,6 +31,7 @@ const App = () => {
 
   const savePerson = (event) => {
     event.preventDefault()
+    const persName= newName
 
     if(personValid(newName)) {
       const personObject = {
@@ -37,14 +43,24 @@ const App = () => {
         .create(personObject)
         .then(createdPerson => {
           setPersons(persons.concat(createdPerson))
+          setErrorMessage(`'${persName}' was successfully added!`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
 
         })
         .catch(error => {
-          alert('Person could not be added to server')
+          setErrorMessage(`'${persName}' could not be added`)
         })
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
 
     } else {
-      window.alert(`${newName} is already added to phonebook`);
+      setErrorMessage(`'${persName}' is already in the list`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
 
     setNewName('')
@@ -74,15 +90,25 @@ const App = () => {
 
   const deletePeople = event => {
     event.preventDefault()
-    if(window.confirm('You sure you want to delete this person?')) {
-      const idToBeDeleted = event.target.id
-      const personList = persons.filter(person => person.id !== parseInt(idToBeDeleted))
+    const idToBeDeleted = parseInt(event.target.id)
+    const name = persons.find(person => person.id === idToBeDeleted).name
+    if(window.confirm(`You sure you want to delete '${name}'?`)) {
+      const personList = persons.filter(person => person.id !== idToBeDeleted)
       numberService
         .deletePerson(idToBeDeleted)
-        .then(response => setPersons(personList) )
-        .catch(error => {
-          alert('Person could not be deleted')
+        .then(response => {
+          setPersons(personList)
+          setErrorMessage(`'${name}' was successfully deleted!`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
+        .catch(error => {
+          setErrorMessage(`'${name}' could not be deleted`)
+        })
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
     }
   }
 
@@ -97,6 +123,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter searchPeople={searchPeople}
         newSearch={newSearch}
         handleSearchChange={handleSearchChange}
