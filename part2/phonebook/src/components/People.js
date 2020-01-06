@@ -1,9 +1,16 @@
 import React from 'react'
 
-const People = ({people}) => {
+const People = ({people, deleteButtonClick}) => {
   const listPeople = () => {
     return (
-      people.map(person => <li key={person.id}>{person.name} {person.number}</li>)
+      people.map(person =>
+        <div key={person.id}>
+          <li>
+            {person.name} {person.number}
+            <button id={person.id} type="submit" onClick={deleteButtonClick} >Delete</button>
+          </li>
+        </div>
+      )
     )
   }
 
