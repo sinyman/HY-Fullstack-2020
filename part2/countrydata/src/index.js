@@ -16,13 +16,11 @@ const App = () => {
     DataService
     .getBySearch(countrySearch)
     .then(response => {
-      console.log("RESSN: "+response)
       setCountries(response)
     })
   }
 
   useEffect(() => {
-    console.log("useEffect");
     DataService
     .getAll()
     .then(response => setCountries(response))
@@ -35,7 +33,7 @@ const App = () => {
         <Country country={country}
           isSingle={true} />)
     } else if (countries.length > 10) {
-      return <p>Too many matches, specify another filter</p>
+        return <p>Too many matches, specify another filter</p>
     }
     var counts = countries.map(country =>
       <Country country={country}
