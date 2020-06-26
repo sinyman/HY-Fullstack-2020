@@ -14,10 +14,8 @@ const getAll = () => {
 
 const getBySearch = (query) => {
   const request = axios.get(baseURL + 'name/'+query)
-  console.log("KAKKA: " + query);
 
   return request.then(response => {
-    console.log("RESPONSE: "+response);
     return response.data
   })
 }

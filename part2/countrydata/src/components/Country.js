@@ -8,6 +8,11 @@ const Country = ({ country, isSingle }) => {
     setShow(!show)
   }
 
+  /* I know that all lists should have key values for each unique list item
+   * but here I really dont feel it is necessary to have any specific keys and
+   * will let react generate its own from indices.
+   * This results in a warning on line 39.
+   */
   var langs = country.languages.map(lang => <li>{lang.name}</li>)
 
   if (isSingle) {
@@ -21,16 +26,16 @@ const Country = ({ country, isSingle }) => {
         {langs}
         </ul>
         <br/>
-        <img src={country.flag} height="150"></img>
+        <img src={country.flag} alt="flag of {country.name}" height="150"></img>
       </div>
     )
   }
 
   else if (show) {
     return (
-      <div key={country.numericCode}>
+      <div>
         <li key={country.numericCode}>{country.name} <button onClick={() => handleAddInfo()}>hide</button></li>
-        <div key={country.numericCode}>
+        <div>
           <h2>{country.name}</h2>
           <p><b>Capital: </b>{country.capital}</p>
           <p><b>Population: </b>{country.population}</p>
@@ -39,7 +44,7 @@ const Country = ({ country, isSingle }) => {
           {langs}
           </ul>
           <br/>
-          <img src={country.flag} height="150"></img>
+          <img src={country.flag} alt="flag of {country.name}" height="150"></img>
         </div>
       </div>
     )
