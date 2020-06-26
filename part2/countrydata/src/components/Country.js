@@ -1,4 +1,6 @@
 import React, {useState} from 'react'
+import DataService from '../services/DataService'
+import Weather from './Weather'
 
 const Country = ({ country, isSingle }) => {
 
@@ -27,6 +29,7 @@ const Country = ({ country, isSingle }) => {
         </ul>
         <br/>
         <img src={country.flag} alt="flag of {country.name}" height="150"></img>
+        <Weather location={country.capital} />
       </div>
     )
   }
