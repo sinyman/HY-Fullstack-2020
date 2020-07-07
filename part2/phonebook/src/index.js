@@ -17,7 +17,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearch, setNewSearch ] = useState('')
   const [ showAll, setShowAll ] = useState(true)
-  const [ errorMessage, setErrorMessage ] = useState(null)
+  const [ notificationMessage, setNotificationMessage ] = useState(null)
 
 // Form handling
   const handleTextChange = (event) => { setNewName(event.target.value) }
@@ -43,17 +43,17 @@ const App = () => {
         .create(personObject)
         .then(createdPerson => {
           setPersons(persons.concat(createdPerson))
-          setErrorMessage(`'${persName}' was successfully added!`)
+          setNotificationMessage(`Success: '${persName}' was successfully added!`)
           setTimeout(() => {
-            setErrorMessage(null)
+            setNotificationMessage(null)
           }, 5000)
 
         })
         .catch(error => {
-          setErrorMessage(`'${persName}' could not be added`)
+          setNotificationMessage(`Error: '${persName}' could not be added`)
         })
         setTimeout(() => {
-          setErrorMessage(null)
+          setNotificationMessage(null)
         }, 5000)
 
     } else {
@@ -98,17 +98,22 @@ const App = () => {
       numberService
         .deletePerson(idToBeDeleted)
         .then(response => {
+          if(!response) {
+            throw new Error("404");
+          }
           setPersons(personList)
-          setErrorMessage(`'${name}' was successfully deleted!`)
+          setNotificationMessage(`Success: '${name}' was successfully deleted!`)
           setTimeout(() => {
-            setErrorMessage(null)
+            setNotificationMessage(null)
           }, 5000)
         })
         .catch(error => {
-          setErrorMessage(`'${name}' could not be deleted`)
+          setNotificationMessage(`Error: '${name}' could not be deleted.
+            The number may have already been deleted from database, try refreshing
+            the page!`)
         })
         setTimeout(() => {
-          setErrorMessage(null)
+          setNotificationMessage(null)
         }, 5000)
     }
   }
@@ -131,10 +136,10 @@ const App = () => {
           setPersons(personList.concat(response).sort(sortByID))
         })
         .catch(error => {
-          setErrorMessage(`'${personObject.name}' could not be updated`)
+          setNotificationMessage(`Error: Information of '${personObject.name}' has been removed from server`)
         })
         setTimeout(() => {
-          setErrorMessage(null)
+          setNotificationMessage(null)
         }, 5000)
     }
   }
@@ -150,7 +155,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={notificationMessage} />
       <Filter searchPeople={searchPeople}
         newSearch={newSearch}
         handleSearchChange={handleSearchChange}

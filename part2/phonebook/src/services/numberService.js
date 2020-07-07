@@ -22,7 +22,7 @@ const deletePerson = idToBeDeleted => {
     return response.data
   })
   .catch(error => {
-    console.log('Error:',error)
+    return null
   })
 }
 
