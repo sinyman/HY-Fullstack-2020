@@ -57,10 +57,11 @@ const App = () => {
         }, 5000)
 
     } else {
-      setErrorMessage(`'${persName}' is already in the list`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      const personObject = {
+        name: newName,
+        number: newNumber,
+      }
+      updatePeople(personObject)
     }
 
     setNewName('')
@@ -105,6 +106,32 @@ const App = () => {
         })
         .catch(error => {
           setErrorMessage(`'${name}' could not be deleted`)
+        })
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+    }
+  }
+
+  const updatePeople = personObject => {
+    const persID = persons.find(person => person.name === personObject.name).id
+
+    if(window.confirm(`${personObject.name} is already in phonebook, replace the old number with new one?`)) {
+      numberService
+        .update(persID, personObject)
+        .then(response => {
+          const personList = persons.filter(person => person.id !== persID)
+
+          // Helper sort function for getting right order in list(by item id)
+          const sortByID = (a, b) => {
+            if(a.id > b.id) return 1
+            if(a.id < b.id) return -1
+            return 0
+          }
+          setPersons(personList.concat(response).sort(sortByID))
+        })
+        .catch(error => {
+          setErrorMessage(`'${personObject.name}' could not be updated`)
         })
         setTimeout(() => {
           setErrorMessage(null)
