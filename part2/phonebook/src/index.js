@@ -83,9 +83,6 @@ const App = () => {
     : persons.filter(person => person.name.toLowerCase()
       .includes(newSearch.toLowerCase()))
 
-    // Extra method to stop infinite rendering loop
-    const clearSearchField = () => setNewSearch('')
-
     return peopleToShow
   }
 
