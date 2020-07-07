@@ -10,5 +10,4 @@ This is the submission directory for part 2
 |Part 2.6-2.11     |  6h      |
 |Part 2.12-2.14    |  5h      |
 |Part 2.15-2.18    |  4h      |
-|------------------|----------|
-|		     Total:|  21h     |
+|		        <b>Total:</b> |  <b>21h</b>     |
