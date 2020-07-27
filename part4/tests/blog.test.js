@@ -73,3 +73,16 @@ describe('Biggest amount of blogs by author', () => {
     expect(returnedAuthor).toBe("Robert C. Martin")
   })
 })
+
+describe('Most liked author', () => {
+
+  test('whose likes are calculated correctly', () => {
+    let likesQuantity = listHelper.mostLikedAuthor(blogs).likes
+    expect(likesQuantity).toBe(17)
+  })
+
+  test('corresponds to correct author', () => {
+    let returnedAuthor = listHelper.mostLikedAuthor(blogs).author
+    expect(returnedAuthor).toBe("Edsger W. Dijkstra")
+  })
+})

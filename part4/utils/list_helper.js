@@ -47,9 +47,32 @@ const topAuthor = (blogs) => {
   return tmp[0]
 }
 
+const mostLikedAuthor = (blogs) => {
+  let publications = _.groupBy(blogs, 'author')
+
+  let tmp = []
+
+  _.forEach(publications, (pubs, author) => {
+    let likes = pubs.reduce((sum, curr) => sum + curr.likes,0)
+    tmp.push({ 'author': author, 'likes': likes, })
+  });
+
+  tmp.sort((a, b) => {
+    if(a.likes < b.likes) {
+      return 1
+    } else if (a.likes > b.likes) {
+      return -1
+    }
+    return 0
+  })
+
+  return tmp[0]
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favouriteBlog,
-  topAuthor
+  topAuthor,
+  mostLikedAuthor
 }
