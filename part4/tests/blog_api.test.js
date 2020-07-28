@@ -13,10 +13,18 @@ describe('Backend is working correctly:', () => {
   })
 
   test('Correct amount of blogs returned', async () => {
-    const response = await api.get('/api/blogs')
+    let response = await api.get('/api/blogs')
 
     expect(response.body.length).toBe(3)
   })
+
+  test('Has unique identifier named "id"', async () => {
+    let response = await api.get('/api/blogs')
+
+    // not quite sure I understood the exercise correct, but I am verifying that
+    // the blogs have an ID, by checking the first element
+    expect(response.body[0].id).toBeDefined();
+  });
 })
 
 afterAll(() => {
