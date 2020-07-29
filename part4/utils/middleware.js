@@ -1,13 +1,9 @@
 const _ = require('lodash')
-const mongoose = require('mongoose')
+const { Error } = require('mongoose')
 const logger = require('./logger');
 
 const requestLogger = (request, response, next) => {
-  logger.info(
-    `${request.method}
-     ${request.path}
-     ${ _.isEmpty(request.body)? '': JSON.stringify(request.body)}
-  `)
+  logger.info(`${request.method} ${response.statusCode} ${request.path} -- ${JSON.stringify(request.body)}`)
 
   next()
 }
@@ -18,7 +14,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ status: 400, message: "Bad request" })
   }
 
-  if (error instanceof mongoose.Error.ValidationError) {
+  if (error instanceof Error.ValidationError) {
     return response.status(400).json({ status: 400, message: `${error}` })
   }
 

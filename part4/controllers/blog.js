@@ -17,13 +17,15 @@ notesRouter.post('/', async (request, response, next) => {
     likes: request.body.likes
   })
 
-  try {
-    const result = await blog.save()
-    response.status(201).json(result)
-    next()
-  } catch(exception) {
-    next(exception)
-  }
+  const result = await blog.save()
+  response.status(201).json(result)
+  next()
+})
+
+notesRouter.delete('/:id', async (request, response, next) => {
+  let toDelete = await Blog.findById(request.params.id)
+  toDelete? response.status(204).end(): response.status(404).end()
+  next()
 })
 
 module.exports = notesRouter
