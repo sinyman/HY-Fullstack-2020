@@ -1,15 +1,24 @@
+const _ = require('lodash')
 const logger = require('./logger');
 
 const requestLogger = (request, response, next) => {
-  let body = JSON.stringify(request.body)
-  logger.info(request.method,request.path,`${ body.substr(1,body.length-2) ? body : "" }`)
+  logger.info(
+    `${request.method}
+     ${request.path}
+     ${ _.isEmpty(request.body)? '': JSON.stringify(request.body)}
+  `)
+
   next()
 }
 
 const errorHandler = (error, request, response, next) => {
-  logger.error(error.message)
+
+  if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
+    logger.error(error.message)
+    return response.status(400).json({ status: 400, message: "Bad request: Check that your JSON is correct" })
+  }
 
   next(error)
 }
 
-module.exports = { requestLogger, errorHandler }
+module.exports = { requestLogger, errorHandler  }

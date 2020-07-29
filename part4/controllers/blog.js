@@ -1,10 +1,6 @@
-const mongoose = require('mongoose')
 const notesRouter = require('express').Router()
 const Blog = require('../models/blog')
 const config = require('../utils/config');
-
-
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 notesRouter.get('/', async (request, response, next) => {
   const blogs = await Blog.find({})
@@ -14,11 +10,21 @@ notesRouter.get('/', async (request, response, next) => {
 })
 
 notesRouter.post('/', async (request, response, next) => {
-  const blog = new Blog(request.body)
-  const result = await blog.save().catch(error => next(error))
+  const blog = new Blog({
+    title: request.body.title? request.body.title: '',
+    author: request.body.author? request.body.author: '',
+    url: request.body.url? request.body.url: '',
+    likes: request.body.likes? request.body.likes: 0
+  })
 
-  response.status(201).json(result)
-  next()
+  try {
+    const result = await blog.save().catch(error => next(error))
+    response.status(201).json(result)
+    next()
+  } catch(exception) {
+    next(exception)
+  }
+
 })
 
 module.exports = notesRouter
