@@ -95,6 +95,26 @@ describe('Backend POST-requests work correctly:', () => {
     const newTitle = blogs.map(b => b.title)
     expect(newTitle).toContain('Elgskyttarne')
   })
+
+  test('Likes default to 0, unless specified', async () => {
+    let blog1 = new Blog({
+      title: 'Elgskyttarne',
+      author: 'Johan Ludvig Runeberg',
+      url: '-',
+      likes: 1000
+    })
+    let res1 = await helper.saveBlog(blog1)
+
+    let blog2 = new Blog({
+      title: 'Kanteletar',
+      author: 'Elias Lönnrot',
+      url: '-'
+    })
+    let res2 = await helper.saveBlog(blog2)
+
+    expect(res1.likes).toBe(1000)
+    expect(res2.likes).toBe(0)
+  })
 })
 
 afterAll(() => {
