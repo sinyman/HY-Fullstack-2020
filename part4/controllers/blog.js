@@ -17,7 +17,7 @@ notesRouter.post('/', async (request, response, next) => {
     likes: request.body.likes
   })
 
-  const result = await blog.save()
+  let result = await blog.save()
   response.status(201).json(result)
   next()
 })
@@ -25,6 +25,27 @@ notesRouter.post('/', async (request, response, next) => {
 notesRouter.delete('/:id', async (request, response, next) => {
   let toDelete = await Blog.findById(request.params.id)
   toDelete? response.status(204).end(): response.status(404).end()
+  next()
+})
+
+notesRouter.put('/:id', async (request, response, next) => {
+  let body = request.body
+
+  const blog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes
+  }
+  
+  const options = {
+    runValidators: true,
+    new: true,
+    context: 'query'
+  }
+
+  let updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, options)
+  response.json(updatedBlog)
   next()
 })
 
