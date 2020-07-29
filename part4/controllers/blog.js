@@ -11,20 +11,19 @@ notesRouter.get('/', async (request, response, next) => {
 
 notesRouter.post('/', async (request, response, next) => {
   const blog = new Blog({
-    title: request.body.title? request.body.title: '',
-    author: request.body.author? request.body.author: '',
-    url: request.body.url? request.body.url: '',
-    likes: request.body.likes? request.body.likes: 0
+    title: request.body.title,
+    author: request.body.author,
+    url: request.body.url,
+    likes: request.body.likes
   })
 
   try {
-    const result = await blog.save().catch(error => next(error))
+    const result = await blog.save()
     response.status(201).json(result)
     next()
   } catch(exception) {
     next(exception)
   }
-
 })
 
 module.exports = notesRouter

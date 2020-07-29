@@ -115,6 +115,18 @@ describe('Backend POST-requests work correctly:', () => {
     expect(res1.likes).toBe(1000)
     expect(res2.likes).toBe(0)
   })
+
+  test('Missing title and URL returns 400 Bad Request', async () => {
+    let blog = new Blog({
+      author: 'JL. Runeberg',
+      likes: 3000
+    })
+
+    await api
+      .post('/api/blogs')
+      .send(blog)
+      .expect(400)
+  })
 })
 
 afterAll(() => {
