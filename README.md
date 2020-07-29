@@ -7,3 +7,4 @@ Repo for the 2019-2020 HY fullstack mooc course
 - [Part 1](./part1/)
 - [Part 2](./part2/)
 - [Part 3](./part3/)
+- [Part 4](./part4/)
