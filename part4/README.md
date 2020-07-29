@@ -6,5 +6,6 @@ This is the submission directory for part 4
 |-------------------------------------|----------|
 |Basic setup, exercise 4.1            |  1h      |
 |Exercises 4.2-4.7                    |  5h      |
-|Start exercise 4.8-4.10              |  5h      |
-|<b>Total</b>                         |<b>11h</b> |
+|Exercises 4.8-4.10                   |  5h      |
+|Exercises 4.1-4.14                   |  4h      |
+|<b>Total</b>                         |<b>15h</b> |
