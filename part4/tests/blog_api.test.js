@@ -49,10 +49,14 @@ describe('Backend POST-requests work correctly:', () => {
       likes: 5518000
     })
 
-    let result = await blogToAdd.save()
+    let response = await api
+      .post('/api/blogs')
+      .send(blogToAdd)
+
     let blogs = await helper.blogsInDB()
 
-    expect(result).toEqual(blogToAdd)
+    expect(blogs)
+      .toContainEqual(expect.objectContaining(response.body));
   })
 
   test('POST request increases amount of blogs', async () => {

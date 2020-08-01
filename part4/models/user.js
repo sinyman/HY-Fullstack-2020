@@ -1,9 +1,23 @@
 const mongoose = require('mongoose')
 
+mongoose.set('useCreateIndex', true)
+
 const userSchema = new mongoose.Schema({
-  username: String,
+  username: {
+    type: String,
+    minlength: 3,
+    required: true,
+    unique: true
+  },
   name: String,
-  passwordHash: String
+  passwordHash: {
+    type: String,
+    required: true,
+  },
+  blogs: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Blog'
+  }],
 })
 
 userSchema.set('toJSON', {
@@ -11,7 +25,6 @@ userSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-    // Password should not be shown in JSON
     delete returnedObject.passwordHash
   }
 })
