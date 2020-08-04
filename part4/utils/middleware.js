@@ -3,7 +3,7 @@ const { Error } = require('mongoose')
 const logger = require('./logger');
 
 const errorHandler = (error, request, response, next) => {
-  
+
   if (error instanceof SyntaxError && error.status === 400) {
     return response.status(400).json({ status: 400, message: "Bad request" })
   }
@@ -22,6 +22,13 @@ const errorHandler = (error, request, response, next) => {
     return response.status(401).json({
       status: 401,
       message: `Unauthorized: Token missing or invalid. Reason: '${error.message}'`
+    })
+  }
+
+  if(error.name === 'CastError') {
+    return response.status(error.status).json({
+      status: error.status,
+      message: `${error.message}`
     })
   }
 

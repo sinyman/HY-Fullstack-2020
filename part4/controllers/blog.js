@@ -12,14 +12,6 @@ blogRouter.get('/', async (request, response, next) => {
   next()
 })
 
-const getToken = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-
 /*
  Helper method for veifying token to avoid code redundancy in routes.
  Should probably be put in some other file, but keeping it here since it isn't
@@ -27,11 +19,16 @@ const getToken = request => {
  */
 const verifyToken = req => {
   const token = req.token
-  const decodedToken = jwt.verify(token, process.env.SECRET)
-  if (!token || !decodedToken.id) {
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!token || !decodedToken.id) {
+      return [false, null]
+    }
+    return [true, decodedToken]
+    
+  } catch(error) {
     return [false, null]
   }
-  return [true, decodedToken]
 }
 
 blogRouter.post('/', async (request, response, next) => {
@@ -55,14 +52,38 @@ blogRouter.post('/', async (request, response, next) => {
     response.status(201).json(result)
 
   } else {
-    return response.status(401).json({ error: 'Unauthorized: Token missing or invalid' })
+    response.status(401).json({ error: 'Unauthorized: Token missing or invalid' })
   }
   next()
 })
 
 blogRouter.delete('/:id', async (request, response, next) => {
-  let toDelete = await Blog.findById(request.params.id)
-  toDelete? response.status(204).end(): response.status(404).end()
+  let [tokenValid, decodedToken] = verifyToken(request)
+  if(tokenValid) {
+    const user = await User.findById(decodedToken.id)
+    try {
+      const toDelete = await Blog.findById(request.params.id)
+
+      let userID = user._id
+
+      if ( toDelete.creator.toString() === userID.toString() ) {
+        await toDelete.remove()
+
+        user.blogs = user.blogs.filter(blog => blog.id !== toDelete.id)
+        await user.save()
+
+        response.status(204).end()
+
+      } else {
+        response.status(401).json({ status: 401, message: 'Unauthorized' })
+      }
+    } catch(exception) {
+      next({ status: 400, name:exception.name, message:`${ exception.name == 'CastError'? "Malformatted ID": exception.name}`})
+    }
+  } else {
+    response.status(401).json({ error: 'Unauthorized: Token missing or invalid' })
+  }
+
   next()
 })
 
