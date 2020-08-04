@@ -9,6 +9,9 @@ const requestLogger = (request, response, next) => {
 }
 
 const errorHandler = (error, request, response, next) => {
+
+  console.log("error",error)
+
   if (error instanceof SyntaxError && error.status === 400) {
     return response.status(400).json({ status: 400, message: "Bad request" })
   }
@@ -21,6 +24,13 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({
       status: 400,
       message: `${error.keyValue['username']}: This username exists already. Please choose a different one` })
+  }
+
+  if(error.name === 'JsonWebTokenError') {
+    return response.status(401).json({
+      status: 401,
+      message: `Unauthorized: Token missing or invalid. Reason: '${error.message}'`
+    })
   }
 
   logger.error(error.message)
