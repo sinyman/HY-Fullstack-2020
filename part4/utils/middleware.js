@@ -2,16 +2,8 @@ const _ = require('lodash')
 const { Error } = require('mongoose')
 const logger = require('./logger');
 
-const requestLogger = (request, response, next) => {
-  logger.info(`${request.method} ${response.statusCode} ${request.path} -- ${JSON.stringify(request.body)}`)
-
-  next()
-}
-
 const errorHandler = (error, request, response, next) => {
-
-  console.log("error",error)
-
+  
   if (error instanceof SyntaxError && error.status === 400) {
     return response.status(400).json({ status: 400, message: "Bad request" })
   }
@@ -38,4 +30,18 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-module.exports = { requestLogger, errorHandler  }
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request['token'] = authorization.substring(7)
+  }
+  next()
+}
+
+const requestLogger = (request, response, next) => {
+  logger.info(`${request.method} ${response.statusCode} ${request.path} -- ${JSON.stringify(request.body)}`)
+
+  next()
+}
+
+module.exports = { requestLogger, errorHandler, tokenExtractor  }

@@ -20,8 +20,13 @@ const getToken = request => {
   return null
 }
 
+/*
+ Helper method for veifying token to avoid code redundancy in routes.
+ Should probably be put in some other file, but keeping it here since it isn't
+ mandatory in course schedule.
+ */
 const verifyToken = req => {
-  const token = getToken(req)
+  const token = req.token
   const decodedToken = jwt.verify(token, process.env.SECRET)
   if (!token || !decodedToken.id) {
     return [false, null]
