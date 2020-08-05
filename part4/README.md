@@ -9,4 +9,5 @@ This is the submission directory for part 4
 |Exercises 4.8-4.10                   |  5h      |
 |Exercises 4.1-4.14                   |  4h      |
 |Exercise 4.15-4.18                   |  7h      |
-|<b>Total</b>                         |<b>22h</b> |
+|Exercise 4.22                        |  3h      |
+|<b>Total</b>                         |<b>25h</b> |

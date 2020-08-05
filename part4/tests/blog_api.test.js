@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 const api = supertest(app)
@@ -9,11 +10,14 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
   for(blog of helper.initialBlogs) {
     let blogObject = new Blog(blog)
     await blogObject.save()
   }
+
+  await helper.setupTestUser()
 
 })
 
@@ -41,6 +45,7 @@ describe('Backend GET-requests work correctly:', () => {
 })
 
 describe('Backend POST-requests work correctly:', () => {
+
   test('POST adds correct user to DB', async () => {
     let blogToAdd = new Blog({
       title: 'Vänrikki Stoolin Tarinat',
@@ -49,14 +54,21 @@ describe('Backend POST-requests work correctly:', () => {
       likes: 5518000
     })
 
+    let user = await api
+      .post('/api/login')
+      .send({ username: 'tuser', password: 'testpass' })
+
     let response = await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${user.body.token}`)
       .send(blogToAdd)
 
     let blogs = await helper.blogsInDB()
+    let titles = blogs.map(blog => blog.title)
+    expect(titles).toContain('Vänrikki Stoolin Tarinat')
 
-    expect(blogs)
-      .toContainEqual(expect.objectContaining(response.body));
+    let authors = blogs.map(blog => blog.author)
+    expect(authors).toContain('Johan Ludvig Runeberg')
   })
 
   test('POST request increases amount of blogs', async () => {
@@ -67,8 +79,13 @@ describe('Backend POST-requests work correctly:', () => {
       likes: 138000
     })
 
+    let user = await api
+      .post('/api/login')
+      .send({ username: 'tuser', password: 'testpass' })
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${user.body.token}`)
       .send(blogToAdd)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -85,8 +102,13 @@ describe('Backend POST-requests work correctly:', () => {
       likes: 1000
     })
 
+    let user = await api
+      .post('/api/login')
+      .send({ username: 'tuser', password: 'testpass' })
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${user.body.token}`)
       .send(blogToAdd)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -101,23 +123,42 @@ describe('Backend POST-requests work correctly:', () => {
   })
 
   test('Likes default to 0, unless specified', async () => {
+
+    let user = await api
+      .post('/api/login')
+      .send({ username: 'tuser', password: 'testpass' })
+
     let blog1 = new Blog({
       title: 'Elgskyttarne',
       author: 'Johan Ludvig Runeberg',
       url: '-',
       likes: 1000
     })
-    let res1 = await helper.saveBlog(blog1)
+    let res1 = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${user.body.token}`)
+      .send(blog1)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
     let blog2 = new Blog({
       title: 'Kanteletar',
       author: 'Elias Lönnrot',
       url: '-'
     })
-    let res2 = await helper.saveBlog(blog2)
 
-    expect(res1.likes).toBe(1000)
-    expect(res2.likes).toBe(0)
+    let res2 = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${user.body.token}`)
+      .send(blog2)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    let blog1Likes = res1.body.likes
+    let blog2Likes = res2.body.likes
+
+    expect(blog1Likes).toBe(1000)
+    expect(blog2Likes).toBe(0)
   })
 
   test('Missing title and URL returns 400 Bad Request', async () => {
@@ -126,10 +167,28 @@ describe('Backend POST-requests work correctly:', () => {
       likes: 3000
     })
 
+    let user = await api
+      .post('/api/login')
+      .send({ username: 'tuser', password: 'testpass' })
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${user.body.token}`)
+      .send(blog)
+      .expect(400)
+  })
+
+  test('Adding blog without token doesn\'t work', async () => {
+    let blog = new Blog({
+      title: 'Kalevipoeg',
+      author: 'Friedrich Reinhold Kreutzwald',
+      url: 'www.kalevipoeg.ee'
+    })
+
     await api
       .post('/api/blogs')
       .send(blog)
-      .expect(400)
+      .expect(401)
   })
 })
 
