@@ -10,12 +10,15 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-
-  /*useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])*/
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.getUsersBlogs(user)
+      .then(blogs => setBlogs(blogs))
+    }
+  }, [])
 
   const loginFormHandler = async (event) => {
     event.preventDefault()
@@ -28,6 +31,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      window.localStorage.setItem(
+        'loggedAppUser', JSON.stringify(user)
+      )
 
       blogService.getUsersBlogs(user)
       .then(blogs => setBlogs(blogs))
@@ -48,28 +54,28 @@ const App = () => {
   const logout = () => {
     setUser(null)
     setBlogs([])
+    window.localStorage.removeItem('loggedAppUser')
 
   }
 
-  if(user) {
+  if(!user) {
     return (
       <div>
-        <button onClick={logout}>Log out</button>
-        <h2>{user.name}'s blogs</h2>
-        <ul>
-          {blogs.map(blog =>
-            <li key={blog.id}>
-            <Blog blog={blog} />
-            </li>
-          )}
-        </ul>
+        <LoginForm formHandler={loginFormHandler} changeHandler={handleChange} />
       </div>
     )
   }
-
   return (
     <div>
-      <LoginForm formHandler={loginFormHandler} changeHandler={handleChange} />
+      <button onClick={logout}>Log out</button>
+      <h2>{user.name}'s blogs</h2>
+      <ul>
+        {blogs.map(blog =>
+        <li key={blog.id}>
+          <Blog blog={blog} />
+        </li>
+        )}
+      </ul>
     </div>
   )
 }
