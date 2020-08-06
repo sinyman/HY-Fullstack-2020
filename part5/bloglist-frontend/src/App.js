@@ -10,11 +10,12 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  useEffect(() => {
+
+  /*useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
-  }, [])
+  }, [])*/
 
   const loginFormHandler = async (event) => {
     event.preventDefault()
@@ -27,6 +28,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+
+      blogService.getUsersBlogs(user)
+      .then(blogs => setBlogs(blogs))
 
     } catch (exception) {
       window.alert('Username or password invalid!')
@@ -41,9 +45,16 @@ const App = () => {
     }
   }
 
+  const logout = () => {
+    setUser(null)
+    setBlogs([])
+
+  }
+
   if(user) {
     return (
       <div>
+        <button onClick={logout}>Log out</button>
         <h2>{user.name}'s blogs</h2>
         <ul>
           {blogs.map(blog =>
