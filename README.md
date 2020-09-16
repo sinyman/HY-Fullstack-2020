@@ -1,5 +1,5 @@
 # HY-Fullstack-2019-2020
-Repo for the 2019-2020 HY fullstack mooc course  
+Repo for the 2019-2020 HY fullstack MOOC course  
 [Course Homepage](https://fullstackopen.com/)
 
 ## Exercises
